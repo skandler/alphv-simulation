@@ -50,9 +50,14 @@ else {
 }
 
 # Test #1 - ADRecon Script 
-# noch bauen, prereqs RSAT and .NET
-#bitsadmin /transfer ovr /download http://the-inator.com/digirevenge/ADRecon.ps1 C:\temp\ADRecon.ps1
-#C:\temp\ADRecon.ps1 -Collect GroupMembers, Computers -OutputType CSV
+# prereqs RSAT and .NET 
+cmd.exe /c mkdir c:\temp
+bitsadmin /transfer ovr /download https://github.com/sense-of-security/ADRecon/blob/11881a24e9c8b207f31b56846809ce1fb189bcc9/ADRecon.ps1 C:\temp\ADRecon.ps1
+cmd.exe /c dism /online /add-capability /capabilityname:Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0
+Set-ExecutionPolicy Unrestricted  -scope CurrentUser -Force
+powershell.exe -c "Unblock-File C:\temp\ADRecon.ps1"
+C:\temp\ADRecon.ps1 -Collect GroupMembers, Computers -OutputType CSV
+echo "Output can be found at c:\temp\ADRecon-Report...\CSV-Files\xxx.csv"
 
 # set powershell execution policy to unrestricted and unblock file
 powershell.exe -c "$ep=Get-ExecutionPolicy;If ($ep -ne 'Unrestricted') {Set-ExecutionPolicy Unrestricted  -scope CurrentUser -Force}
